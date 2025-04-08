@@ -12,7 +12,8 @@ function App(){
       setExpenses([...expenses, newExpense])
     }
 
-    const handleDeleteExpense = (expenseId) => {
+    const handleDeleteExpense = (expenseId) => { 
+      
       setExpenses(expenses.filter(expense => expense.id !== expenseId))
     }
 
