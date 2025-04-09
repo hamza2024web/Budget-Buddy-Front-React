@@ -13,7 +13,7 @@ function App(){
     }
 
     const handleDeleteExpense = (expenseId) => { 
-      
+
       setExpenses(expenses.filter(expense => expense.id !== expenseId))
     }
 
