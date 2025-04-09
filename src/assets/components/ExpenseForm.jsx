@@ -67,9 +67,6 @@ function ExpenseForm({ onAddExpense }){
                 <select onChange={(e) => setCategory(e.target.value)} value={category}>
                     <option value="">Sélectionnez une catégorie</option>
                     <option value="alimentation">Alimentation</option>
-                    <option value="transport">Transport</option>
-                    <option value="loisirs">Loisirs</option>
-                    <option value="autre">Autre</option>
                 </select>
             </div>
             <button type="submit">Ajouter</button>
