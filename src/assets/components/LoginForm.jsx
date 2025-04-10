@@ -5,10 +5,13 @@ function LoginForm({onLogin}){
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState(null)
+    const [isLoading, setIsLoading] = useState(false)
 
     const handleSubmitLogin = async (e) => {
         e.preventDefault()
 
+        setIsLoading(true)
+        setError(null)
         try{
             const response = await login({email,password});
 
@@ -19,12 +22,20 @@ function LoginForm({onLogin}){
         } catch (err){
             setError('Identifiants incorrects');
             console.error('Errer de connexion',err);
+        } finally {
+            setIsLoading(false)
         }
     };
 
     return (
         <form onSubmit={handleSubmitLogin} className="login-form">
         <h2>Login To Your Account</h2>
+
+        {error && (
+            <div className="error-message" style={{ color: 'red', marginBottom: '10px'}}>
+                {error}
+            </div>
+        )}
         <div>
             <label>email</label>
             <input 
@@ -43,7 +54,9 @@ function LoginForm({onLogin}){
                 placeholder="saiser le mot de passe de votre account"
             />
         </div>
-        <button type="submit">Login</button>
+        <button type="submit" disabled={isLoading}>
+            {isLoading ? 'Connexion...' : 'Login'}
+        </button>
     </form>
     );
 }
