@@ -18,8 +18,6 @@ function ExpenseList({ expenses, onDeleteExpense }) {
                     <div className="expense-details">
                         <h3>{expense.title}</h3>
                         <p>Montant : {expense.amount} €</p>
-                        <p>Date : {new Date(expense.date).toLocaleDateString()}</p>
-                        <p>Catégorie : {expense.category}</p>
                     </div>
                     <div className="expense-actions">
                         <button 

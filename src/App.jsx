@@ -62,11 +62,21 @@ function App() {
 
     const handleAddExpense = async (newExpense) => {
       try {
+        console.log("Sending expense:", newExpense);
         const savedExpense = await addExpense(newExpense);
-        setExpenses([...expenses, savedExpense]);
+        console.log("Received response:", savedExpense);
+        
+        if (!Array.isArray(expenses)) {
+          setExpenses([savedExpense]);
+        } else {
+          setExpenses([...expenses, savedExpense]);
+        }
+        
+        console.log("Expense added successfully!");
+        
       } catch (err) {
         setError("Impossible d'ajouter la dépense");
-        console.error(err);
+        console.error("Error details:", err.response?.data || err);
       }
     }
 

@@ -2,22 +2,21 @@ import React, { useState } from "react";
 import '../css/ExpenseForm.css';
 
 function ExpenseForm({ onAddExpense, tags = [] }) {
-    console.log(tags)
     const [title, setTitle] = useState('');
-    const [selectedTag, setSelectedTag] = useState('');
+    const [selectedTags, setSelectedTags] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!title || !selectedTag) {
+        if (!title || selectedTags.length === 0) {
             alert('Veuillez remplir tous les champs');
             return;
         }
 
         const newExpense = {
-            title,
-            tagId: selectedTag
+            name: title,
+            tags: selectedTags
         };
 
         setIsSubmitting(true);
@@ -26,7 +25,7 @@ function ExpenseForm({ onAddExpense, tags = [] }) {
             await onAddExpense(newExpense);
 
             setTitle('');
-            setSelectedTag('');
+            setSelectedTags([]);
         } catch (error) {
             console.error("Erreur lors de l'ajout de la dépense:", error);
         } finally {
@@ -51,15 +50,18 @@ function ExpenseForm({ onAddExpense, tags = [] }) {
             <div>
                 <label htmlFor="tags">Tags</label>
                 <select 
-                    id="tags"
-                    onChange={(e) => setSelectedTag(e.target.value)} 
-                    value={selectedTag}
+                    id="tags" 
+                    multiple
+                    onChange={(e) => {
+                        const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
+                        setSelectedTags(selectedOptions);
+                    }} 
+                    value={selectedTags}
                     disabled={isSubmitting}
                 >
-                    <option value="">Sélectionnez un tag</option>
                     {tags.map(tag => (
                         <option key={tag.id} value={tag.id}>
-                            {tag.name}
+                            {tag.tags}
                         </option>
                     ))}
                 </select>

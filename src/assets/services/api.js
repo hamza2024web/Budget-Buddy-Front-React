@@ -9,8 +9,13 @@ const API_BASE_URL_login = 'http://127.0.0.1:82/api/login';
 
 export const fetchExpenses = async () => {
     try{
-        const response = await axios.get(API_BASE_URL);
-        return response.data;
+        const token = localStorage.getItem('token');
+        const response = await axios.get(API_BASE_URL,{
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        return response.data.dependences;
     } catch (error){
         console.error('Erreur lors de la récupération des dépenses:',error);
         throw error;
@@ -19,7 +24,12 @@ export const fetchExpenses = async () => {
 
 export const addExpense = async (expense) => {
     try{
-        const response = await axios.post(API_BASE_URL_add, expense);
+        const token = localStorage.getItem('token');
+        const response = await axios.post(API_BASE_URL_add, expense,{
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
         return response.data;
     } catch (error){
         console.error('Erreur lors de lajout de la dépense:', error);
@@ -48,7 +58,12 @@ export const deleteExpense = async (expenseId) => {
 
 export const fetchtags = async () => {
     try {
-        const response = await axios.get(API_BASE_URL_tags);
+        const token = localStorage.getItem('token');
+        const response = await axios.get(API_BASE_URL_tags,{
+            headers: {
+                'Authorization' :`Bearer ${token}`
+            }
+        });
         return response.data;
     } catch (error){
         console.error('Error lors fetch The tags',error);
