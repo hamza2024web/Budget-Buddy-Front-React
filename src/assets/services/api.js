@@ -4,7 +4,7 @@ const API_BASE_URL = 'http://127.0.0.1:82/api/expenses';
 const API_BASE_URL_add = 'http://127.0.0.1:82/api/expenses';
 const API_BASE_URL_update = 'http://127.0.0.1:82/api/expenses/{id}';
 const API_BASE_URL_delete = 'http://127.0.0.1:82/api/expenses/{id}';
-const API_BASE_URL_category = 'http://127.0.0.1:82/api/category';
+const API_BASE_URL_tags = 'http://127.0.0.1:82/api/tags';
 const API_BASE_URL_login = 'http://127.0.0.1:82/api/login';
 
 export const fetchExpenses = async () => {
@@ -46,12 +46,12 @@ export const deleteExpense = async (expenseId) => {
     }
 };
 
-export const fetchCategorie = async () => {
+export const fetchtags = async () => {
     try {
-        const response = await axios.get(API_BASE_URL_category);
+        const response = await axios.get(API_BASE_URL_tags);
         return response.data;
     } catch (error){
-        console.error('Error lors fetch The category',error);
+        console.error('Error lors fetch The tags',error);
         throw error;
     }
 };

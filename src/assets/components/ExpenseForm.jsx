@@ -1,37 +1,32 @@
 import React, { useState } from "react";
 import '../css/ExpenseForm.css';
 
-function ExpenseForm({ onAddExpense, categories = [] }) {
+function ExpenseForm({ onAddExpense, tags = [] }) {
+    console.log(tags)
     const [title, setTitle] = useState('');
-    const [amount, setAmount] = useState('');
-    const [date, setDate] = useState('');
-    const [category, setCategory] = useState('');
+    const [selectedTag, setSelectedTag] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!title || !amount || !date || !category) {
+        if (!title || !selectedTag) {
             alert('Veuillez remplir tous les champs');
             return;
         }
 
         const newExpense = {
             title,
-            amount: parseFloat(amount),
-            date,
-            category
+            tagId: selectedTag
         };
 
         setIsSubmitting(true);
-        
+
         try {
             await onAddExpense(newExpense);
-            
+
             setTitle('');
-            setAmount('');
-            setDate('');
-            setCategory('');
+            setSelectedTag('');
         } catch (error) {
             console.error("Erreur lors de l'ajout de la dépense:", error);
         } finally {
@@ -54,46 +49,19 @@ function ExpenseForm({ onAddExpense, categories = [] }) {
                 />
             </div>
             <div>
-                <label htmlFor="amount">Montant</label>
-                <input 
-                    id="amount"
-                    type="number"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    placeholder="Montant de la dépense"
-                    step="0.01"    
-                    min="0"
-                    disabled={isSubmitting}
-                />
-            </div>
-            <div>
-                <label htmlFor="date">Date</label>
-                <input 
-                    id="date"
-                    type="date" 
-                    value={date}
-                    onChange={(e) => setDate(e.target.value)}
-                    disabled={isSubmitting}
-                />
-            </div>
-            <div>
-                <label htmlFor="category">Catégorie</label>
+                <label htmlFor="tags">Tags</label>
                 <select 
-                    id="category"
-                    onChange={(e) => setCategory(e.target.value)} 
-                    value={category}
+                    id="tags"
+                    onChange={(e) => setSelectedTag(e.target.value)} 
+                    value={selectedTag}
                     disabled={isSubmitting}
                 >
-                    <option value="">Sélectionnez une catégorie</option>
-                    {categories && categories.length > 0 ? (
-                        categories.map(cat => (
-                            <option key={cat.id} value={cat.id}>
-                                {cat.name}
-                            </option>
-                        ))
-                    ) : (
-                        <option value="alimentation">Alimentation</option>
-                    )}
+                    <option value="">Sélectionnez un tag</option>
+                    {tags.map(tag => (
+                        <option key={tag.id} value={tag.id}>
+                            {tag.name}
+                        </option>
+                    ))}
                 </select>
             </div>
             <button type="submit" disabled={isSubmitting}>

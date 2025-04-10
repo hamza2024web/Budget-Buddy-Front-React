@@ -6,7 +6,7 @@ import {
   fetchExpenses,
   addExpense,
   deleteExpense,
-  fetchCategorie
+  fetchtags
 } from './assets/services/api';
 import './App.css'
 
@@ -15,7 +15,7 @@ function App() {
     const [expenses, setExpenses] = useState([])
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState(null)
-    const [category, setCategory] = useState([])
+    const [tag, setTags] = useState([])
 
     useEffect(() => {
       const token = localStorage.getItem('token');
@@ -44,19 +44,19 @@ function App() {
     
     useEffect(() => {
       if (isLogin) {
-        const loadCategory = async () => {
+        const loadTags = async () => {
           try {
             setIsLoading(true);
-            const categoryData = await fetchCategorie();
-            setCategory(categoryData);
+            const tagData = await fetchtags();
+            setTags(tagData);
           } catch (err) {
-            setError('Impossible de charger les catégories');
+            setError('Impossible de charger les tags');
             console.error(err);
           } finally {
             setIsLoading(false); 
           }
         };
-        loadCategory();
+        loadTags();
       }
     }, [isLogin]);
 
@@ -106,7 +106,7 @@ function App() {
             <div className="dashboard">
               {error && <div className="error-message">{error}</div>}
 
-              <ExpenseForm onAddExpense={handleAddExpense} categories={category} />
+              <ExpenseForm onAddExpense={handleAddExpense} tags={tag} />
 
               {isLoading ? (
                 <p>Chargement des dépenses...</p>
