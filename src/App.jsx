@@ -10,70 +10,112 @@ import {
 } from './assets/services/api';
 import './App.css'
 
-function App(){
+function App() {
     const [isLogin, setIsLogin] = useState(false)
-    const [expenses,setExpenses] = useState([])
+    const [expenses, setExpenses] = useState([])
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState(null)
     const [category, setCategory] = useState([])
 
     useEffect(() => {
-      const loadExpenses = async () => {
-        try {
-          setIsLoading(true);
-          const data = await fetchExpenses();
-          setExpenses(data);
-          setIsLoading(false);
-        } catch (err){
-          setError('Impossible de charger les dépenses');
-          setIsLoading(false);
-        }
-      };
-      loadExpenses();
-    }, []);
-    
-    useEffect (() => {
-      const loadCategory = async () => {
-        try {
-          setIsLoading(true);
-          const category = await fetchCategorie();
-          setCategory(category);
-          setIsLoading(false);
-        } catch (err){
-          setError('Impossible de charger les category');
-          setIsLoading(false);
-        }
-      };
-      loadCategory();
-    }, []);
+      const token = localStorage.getItem('token');
+      if (token) {
+        setIsLogin(true)
+      }
+    }, [])
 
-    const handleAddExpense = (newExpense) => {
-      setExpenses([...expenses, newExpense])
+    useEffect(() => {
+      if (isLogin) {
+        const loadExpenses = async () => {
+          try {
+            setIsLoading(true);
+            const data = await fetchExpenses();
+            setExpenses(data);
+          } catch (err) {
+            setError('Impossible de charger les dépenses');
+            console.error(err);
+          } finally {
+            setIsLoading(false);
+          }        
+        };
+        loadExpenses();
+      }
+    }, [isLogin]);
+    
+    useEffect(() => {
+      if (isLogin) {
+        const loadCategory = async () => {
+          try {
+            setIsLoading(true);
+            const categoryData = await fetchCategorie();
+            setCategory(categoryData);
+          } catch (err) {
+            setError('Impossible de charger les catégories');
+            console.error(err);
+          } finally {
+            setIsLoading(false); 
+          }
+        };
+        loadCategory();
+      }
+    }, [isLogin]);
+
+    const handleAddExpense = async (newExpense) => {
+      try {
+        const savedExpense = await addExpense(newExpense);
+        setExpenses([...expenses, savedExpense]);
+      } catch (err) {
+        setError("Impossible d'ajouter la dépense");
+        console.error(err);
+      }
     }
 
-    const handleDeleteExpense = (expenseId) => { 
-
-      setExpenses(expenses.filter(expense => expense.id !== expenseId))
+    const handleDeleteExpense = async (expenseId) => { 
+      try {
+        await deleteExpense(expenseId);
+        setExpenses(expenses.filter(expense => expense.id !== expenseId));
+      } catch (err) {
+        setError("Impossible de supprimer la dépense");
+        console.error(err);
+      }
     }
 
     const handleLogin = (login) => {
       setIsLogin(login)
     }
 
+    const handleLogout = () => {
+      localStorage.removeItem('token');
+      setIsLogin(false);
+    }
+
     return (
       <div className="App">
         <header>
           <h1>BudgetBuddy</h1>
+          {isLogin && (
+            <button onClick={handleLogout} className="logout-btn">
+              Déconnexion
+            </button>
+          )}
         </header>
         <main>
-          {!isLogin && (
-            <LoginForm onLogin={handleLogin}></LoginForm>   
+          {!isLogin ? (
+            <LoginForm onLogin={handleLogin} />
+          ) : (
+            <div className="dashboard">
+              {error && <div className="error-message">{error}</div>}
 
+              <ExpenseForm onAddExpense={handleAddExpense} categories={category} />
+
+              {isLoading ? (
+                <p>Chargement des dépenses...</p>
+              ) : (
+                <ExpenseList expenses={expenses} onDeleteExpense={handleDeleteExpense} />
+              )}
+            </div>
           )}
         </main>
-
-
-
       </div>
     );
 }
