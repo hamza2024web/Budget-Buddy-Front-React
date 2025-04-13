@@ -40,7 +40,7 @@ function ExpenseForm({ onAddExpense, tags = [] }) {
                 <label htmlFor="title">Titre</label>
                 <input 
                     id="title"
-                    type="text" 
+                    type="text"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="Nom de la dépense"

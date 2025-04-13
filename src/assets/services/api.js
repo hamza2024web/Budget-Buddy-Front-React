@@ -3,21 +3,21 @@ import axios from "axios";
 const API_BASE_URL = 'http://127.0.0.1:82/api/expenses';
 const API_BASE_URL_add = 'http://127.0.0.1:82/api/expenses';
 const API_BASE_URL_update = 'http://127.0.0.1:82/api/expenses/{id}';
-const API_BASE_URL_delete = 'http://127.0.0.1:82/api/expenses/{id}';
+const API_BASE_URL_delete = 'http://127.0.0.1:82/api/expenses';
 const API_BASE_URL_tags = 'http://127.0.0.1:82/api/tags';
 const API_BASE_URL_login = 'http://127.0.0.1:82/api/login';
 
 export const fetchExpenses = async () => {
-    try{
+    try {
         const token = localStorage.getItem('token');
-        const response = await axios.get(API_BASE_URL,{
+        const response = await axios.get(API_BASE_URL, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         });
-        return response.data.dependences;
-    } catch (error){
-        console.error('Erreur lors de la récupération des dépenses:',error);
+        return response.data.data.dependences
+    } catch (error) {
+        console.error('Erreur lors de la récupération des dépenses:', error);
         throw error;
     }
 };
@@ -49,7 +49,14 @@ export const updateExpense = async (expenseId, updateExpense) => {
 
 export const deleteExpense = async (expenseId) => {
     try{
-        await axios.delete(`${API_BASE_URL_delete}/${expenseId}`);
+        const token = localStorage.getItem('token');
+        const response = await axios.delete(`${API_BASE_URL_delete}/${expenseId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        return response.message;
+
     } catch (error){
         console.error('Error lors de la suppression de la dépense',error);
         throw error;

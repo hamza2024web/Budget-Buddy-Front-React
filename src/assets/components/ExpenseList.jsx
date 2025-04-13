@@ -16,8 +16,8 @@ function ExpenseList({ expenses, onDeleteExpense }) {
             {expenses.map(expense => (
                 <div key={expense.id} className="expense-item">
                     <div className="expense-details">
-                        <h3>{expense.title}</h3>
-                        <p>Montant : {expense.amount} €</p>
+                        <h3>{expense.name}</h3>
+                        <p>Tags : {expense.Tags} </p>
                     </div>
                     <div className="expense-actions">
                         <button 
